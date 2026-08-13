@@ -71,7 +71,7 @@ module.exports = {
       ],
     ],
     extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000/api/v1",
+      apiUrl: process.env.EXPO_PUBLIC_API_URL || "https://backend-bgfz.onrender.com/api/v1",
     },
   },
 };

@@ -19,7 +19,7 @@ import { getDeviceId } from './deviceId';
 // for plain `expo start` local dev, where that address is genuinely
 // correct (web/simulator) or made correct via `adb reverse` (physical
 // device over USB - see mobile/eas.json's development profile comment).
-const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || 'https://backend-bgfz.onrender.com/api/v1';
 
 class FFMAPIClient {
   private isOnline: boolean = true;
