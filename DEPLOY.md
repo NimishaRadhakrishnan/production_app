@@ -12,17 +12,31 @@ This repository is configured to be deployed on [Render](https://render.com) usi
 1. Go to the [Render Dashboard](https://dashboard.render.com).
 2. Click **New** and select **Blueprint**.
 3. Connect this GitHub repository.
-4. Render will read the `render.yaml` file and automatically propose the following services:
-   - `postgis` (Private Service)
+4. Render will read the `render.yaml` file and automatically propose the following services (all set to the Free plan):
    - `redis` (Redis)
    - `backend` (Web Service)
    - `frontend` (Web Service)
-5. You will be prompted to provide values for the following environment variables (which are set to `sync: false` in `render.yaml` for security):
-   - `POSTGRES_PASSWORD`: Generate a strong, random password and paste it here.
+5. You will be prompted to provide values for the following environment variables. Because we are using the free tier, you must provision an external PostgreSQL database with PostGIS support (we recommend [Supabase](https://supabase.com)):
+   - Go to Supabase, create a free project, and wait for the database to provision.
+   - Once provisioned, find your database connection details (under Project Settings -> Database).
+   - Back in Render, fill in the following using your Supabase credentials:
+     - `POSTGRES_HOST`: (e.g., `db.xxxxxxxxxx.supabase.co`)
+     - `POSTGRES_PORT`: `5432`
+     - `POSTGRES_USER`: `postgres`
+     - `POSTGRES_DB`: `postgres`
+     - `POSTGRES_PASSWORD`: The password you set when creating the Supabase project.
    - `JWT_SECRET_KEY`: Generate a strong, secure random string (e.g., using `openssl rand -hex 32`) and paste it here.
    - `CORS_ALLOWED_ORIGINS`: Provide a placeholder like `["http://localhost:3000"]` for now. You will come back to update this in step 4.
    - `NEXT_PUBLIC_API_BASE_URL`: Provide a placeholder like `http://localhost:8000/api/v1` for now. You will come back to update this in step 4.
 6. Click **Apply** or **Deploy** to start the first build process.
+
+## 2.5. Initialize the Database Schema
+
+Because your Supabase database is completely empty, it needs the tables created before the backend can fully start up or you can seed data.
+1. Run migrations locally from your machine against the remote database by exporting the same variables in your terminal, then running Alembic, **OR**:
+2. Wait for the **backend** service to finish its first build (it may fail its health check, but the image will be built).
+3. Navigate to the **backend** service's **Shell** tab in Render.
+4. Run: `alembic upgrade head`
 
 ## 3. Seeding the Database
 

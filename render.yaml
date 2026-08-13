@@ -1,39 +1,24 @@
 services:
-  - type: pserv
-    name: postgis
-    env: image
-    image:
-      url: postgis/postgis:16-3.4-alpine
-    disk:
-      name: postgres_data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 10
-    envVars:
-      - key: POSTGRES_USER
-        value: vishakan_ffm
-      - key: POSTGRES_DB
-        value: vishakan_ffm
-      - key: POSTGRES_PASSWORD
-        sync: false
-
   - type: redis
     name: redis
     ipAllowList: []
+    plan: free
 
   - type: web
     name: backend
     env: docker
+    plan: free
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     envVars:
       - key: POSTGRES_HOST
-        value: postgis
+        sync: false
       - key: POSTGRES_PORT
-        value: "5432"
+        sync: false
       - key: POSTGRES_USER
-        value: vishakan_ffm
+        sync: false
       - key: POSTGRES_DB
-        value: vishakan_ffm
+        sync: false
       - key: POSTGRES_PASSWORD
         sync: false
       - key: REDIS_HOST
@@ -58,6 +43,7 @@ services:
   - type: web
     name: frontend
     env: docker
+    plan: free
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     envVars:
