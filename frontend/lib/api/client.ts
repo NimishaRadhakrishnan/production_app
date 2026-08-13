@@ -1,7 +1,7 @@
 import type { ApiErrorResponse } from "@/lib/types/auth";
 import { tokenStorage } from "@/lib/api/token-storage";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000/api/v1";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://backend-bgfz.onrender.com/api/v1";
 
 export class ApiError extends Error {
   constructor(
