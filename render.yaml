@@ -1,0 +1,64 @@
+services:
+  - type: pserv
+    name: postgis
+    env: docker
+    image: postgis/postgis:16-3.4-alpine
+    disk:
+      name: postgres_data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+    envVars:
+      - key: POSTGRES_USER
+        value: vishakan_ffm
+      - key: POSTGRES_DB
+        value: vishakan_ffm
+      - key: POSTGRES_PASSWORD
+        sync: false
+
+  - type: redis
+    name: redis
+    ipAllowList: []
+
+  - type: web
+    name: backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: POSTGRES_HOST
+        value: postgis
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_USER
+        value: vishakan_ffm
+      - key: POSTGRES_DB
+        value: vishakan_ffm
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: redis
+          property: port
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false
