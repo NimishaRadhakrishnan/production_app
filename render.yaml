@@ -3,7 +3,7 @@ services:
     name: postgis
     env: image
     image:
-      imagePath: postgis/postgis:16-3.4-alpine
+      url: postgis/postgis:16-3.4-alpine
     disk:
       name: postgres_data
       mountPath: /var/lib/postgresql/data
