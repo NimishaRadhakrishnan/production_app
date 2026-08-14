@@ -837,8 +837,13 @@ export default function Dashboard() {
             console.error("Failed to send location ping:", err);
           }
         },
-        async (err) => {
-          console.warn("Geolocation watch error:", err);
+        async (err: any) => {
+          let errorMsg = "Unknown geolocation error";
+          if (err.code === err.PERMISSION_DENIED) errorMsg = "User denied Geolocation";
+          else if (err.code === err.POSITION_UNAVAILABLE) errorMsg = "Location information is unavailable";
+          else if (err.code === err.TIMEOUT) errorMsg = "The request to get user location timed out";
+          console.warn(`Geolocation watch error: ${errorMsg} (${err.message})`, err);
+          
           const now = Date.now();
           if (now - lastErrorPingTime < 20000) return; // Throttle error pings to 20s
           lastErrorPingTime = now;
@@ -862,8 +867,9 @@ export default function Dashboard() {
             console.error("Failed to send location_unavailable ping:", pingErr);
           }
         },
-        { enableHighAccuracy: false, timeout: 30000, maximumAge: 0 }
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
       );
+
     }
 
     return () => {
@@ -1043,7 +1049,7 @@ export default function Dashboard() {
           if (!navigator.geolocation) {
             reject(new Error("Geolocation is not supported by your browser"));
           } else {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+            navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 });
           }
         });
       };
@@ -1208,7 +1214,7 @@ export default function Dashboard() {
       if (navigator.geolocation) {
         try {
           const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 8000 });
+            navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 });
           });
           proof_gps_lat = position.coords.latitude;
           proof_gps_lng = position.coords.longitude;
