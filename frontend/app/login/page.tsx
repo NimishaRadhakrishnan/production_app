@@ -31,10 +31,11 @@ export default function LoginPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const isEmail = username.includes("@");
+      const trimmedUsername = username.trim();
+      const isEmail = trimmedUsername.includes("@");
       const loginPayload = isEmail 
-        ? { email: username, password } 
-        : { employee_id: username, password };
+        ? { email: trimmedUsername, password } 
+        : { employee_id: trimmedUsername, password };
       
       // Perform authentication
       await login(loginPayload);
@@ -49,8 +50,8 @@ export default function LoginPage() {
       }
       
       router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Invalid email/employee ID or password. Please try again.");
+    } catch (err: any) {
+      setError(err?.name === "ApiError" ? err.message : "Invalid email/employee ID or password. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
