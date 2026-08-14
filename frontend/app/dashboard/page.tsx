@@ -8,7 +8,7 @@ import {
   XCircle, Filter, Download, Plus, Search, 
   TrendingUp, Award, Calendar, RefreshCw, MessageSquare,
   Bell, LogOut, ChevronDown, User, Check,
-  CalendarOff, BookOpen, HelpCircle, Upload, ImageIcon, X, Camera
+  CalendarOff, BookOpen, HelpCircle, Upload, ImageIcon, X, Camera, Menu
 } from "lucide-react";
 import { apiFetch, API_BASE_URL, ApiError } from "@/lib/api/client";
 import { tokenStorage } from "@/lib/api/token-storage";
@@ -87,6 +87,12 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("map");
   const [hasSetLandingTab, setHasSetLandingTab] = useState(false);
   const [activeLocations, setActiveLocations] = useState<any[]>([]);
+  const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(false);
+  const handleNavClick = (tab: any) => {
+    setActiveTab(tab);
+    setShowSidebarOnMobile(false);
+  };
+
   const [plans, setPlans] = useState<any[]>([]);
   const [dealers, setDealers] = useState<any[]>([]);
   const [farmers, setFarmers] = useState<any[]>([]);
@@ -1313,6 +1319,12 @@ export default function Dashboard() {
       {/* Header Bar */}
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-3.5 text-white bg-green-900 border-b border-green-800 shadow-md">
         <div className="flex items-center gap-3">
+          <button 
+            className="md:hidden p-1 hover:bg-green-800 rounded transition"
+            onClick={() => setShowSidebarOnMobile(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
           <img src="/logo.png" alt="Vishakan Biotech Logo" className="h-10 w-auto bg-white p-1 rounded shadow-sm" />
           <div>
             <h1 className="text-lg font-bold tracking-wide leading-none">Vishakan Biotech</h1>
@@ -1442,14 +1454,15 @@ export default function Dashboard() {
 
       <div className="flex flex-1">
         {/* Sidebar Menu */}
-        <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800">
+        {showSidebarOnMobile && (<div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setShowSidebarOnMobile(false)} />)}
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800 transform ${showSidebarOnMobile ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex`}>
           <div className="px-4 py-6">
             {user?.role === "admin" && (
               <>
                 <span className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Monitoring Dashboards</span>
                 <nav className="mt-4 space-y-1">
                   <button 
-                    onClick={() => setActiveTab("map")}
+                    onClick={() => handleNavClick("map")}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "map" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                   >
                     <MapPin className="w-5 h-5" />
@@ -1458,7 +1471,7 @@ export default function Dashboard() {
                   </button>
 
                   <button 
-                    onClick={() => setActiveTab("route-history")}
+                    onClick={() => handleNavClick("route-history")}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "route-history" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                   >
                     <Activity className="w-5 h-5" />
@@ -1467,7 +1480,7 @@ export default function Dashboard() {
 
 
                   <button 
-                    onClick={() => setActiveTab("attendance")}
+                    onClick={() => handleNavClick("attendance")}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "attendance" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                   >
                     <Users className="w-5 h-5" />
@@ -1481,7 +1494,7 @@ export default function Dashboard() {
             <nav className="mt-4 space-y-1">
               {(user?.role === "field_officer" || user?.role === "sales_officer") && (
                 <button
-                  onClick={() => setActiveTab("work-doc")}
+                  onClick={() => handleNavClick("work-doc")}
                   className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "work-doc" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                 >
                   <FileText className="w-5 h-5" />
@@ -1489,7 +1502,7 @@ export default function Dashboard() {
                 </button>
               )}
               <button
-                onClick={() => setActiveTab("tasks")}
+                onClick={() => handleNavClick("tasks")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "tasks" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <CheckCircle className="w-5 h-5" />
@@ -1500,7 +1513,7 @@ export default function Dashboard() {
               </button>
 
               <button
-                onClick={() => setActiveTab("productivity")}
+                onClick={() => handleNavClick("productivity")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "productivity" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <TrendingUp className="w-5 h-5" />
@@ -1508,7 +1521,7 @@ export default function Dashboard() {
               </button>
 
               <button
-                onClick={() => setActiveTab("momentum")}
+                onClick={() => handleNavClick("momentum")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "momentum" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <Award className="w-5 h-5" />
@@ -1516,7 +1529,7 @@ export default function Dashboard() {
               </button>
 
               <button 
-                onClick={() => setActiveTab("plans")}
+                onClick={() => handleNavClick("plans")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "plans" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <ClipboardList className="w-5 h-5" />
@@ -1538,7 +1551,7 @@ export default function Dashboard() {
               </button>
 
               <button 
-                onClick={() => setActiveTab("issues")}
+                onClick={() => handleNavClick("issues")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "issues" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <MessageSquare className="w-5 h-5" />
@@ -1549,7 +1562,7 @@ export default function Dashboard() {
               </button>
 
               <button
-                onClick={() => setActiveTab("enquiry")}
+                onClick={() => handleNavClick("enquiry")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "enquiry" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <HelpCircle className="w-5 h-5" />
@@ -1561,7 +1574,7 @@ export default function Dashboard() {
 
               {(user?.role === "field_officer" || user?.role === "sales_officer") && (
                 <button
-                  onClick={() => setActiveTab("leave")}
+                  onClick={() => handleNavClick("leave")}
                   className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "leave" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                 >
                   <CalendarOff className="w-5 h-5" />
@@ -1571,7 +1584,7 @@ export default function Dashboard() {
 
               {(user?.role === "admin" || user?.role === "manager") && (
                 <button
-                  onClick={() => setActiveTab("leave")}
+                  onClick={() => handleNavClick("leave")}
                   className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "leave" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                 >
                   <CalendarOff className="w-5 h-5" />
@@ -1583,7 +1596,7 @@ export default function Dashboard() {
               )}
 
               <button
-                onClick={() => setActiveTab("hrpolicy")}
+                onClick={() => handleNavClick("hrpolicy")}
                 className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "hrpolicy" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
               >
                 <BookOpen className="w-5 h-5" />
@@ -1597,7 +1610,7 @@ export default function Dashboard() {
                 <nav className="mt-4 space-y-1">
                   <button 
                     onClick={() => {
-                      setActiveTab("day-closures");
+                      handleNavClick("day-closures");
                       fetchAdminDayClosures();
                     }}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "day-closures" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
@@ -1607,7 +1620,7 @@ export default function Dashboard() {
                   </button>
 
                   <button 
-                    onClick={() => setActiveTab("reports")}
+                    onClick={() => handleNavClick("reports")}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "reports" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                   >
                     <FileText className="w-5 h-5" />
@@ -1615,7 +1628,7 @@ export default function Dashboard() {
                   </button>
 
                   <button 
-                    onClick={() => setActiveTab("users")}
+                    onClick={() => handleNavClick("users")}
                     className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition ${activeTab === "users" ? "bg-green-700 text-white" : "hover:bg-slate-800 hover:text-white"}`}
                   >
                     <Users className="w-5 h-5" />
