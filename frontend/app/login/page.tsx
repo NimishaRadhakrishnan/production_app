@@ -51,7 +51,11 @@ export default function LoginPage() {
       
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err?.name === "ApiError" ? err.message : "Invalid email/employee ID or password. Please try again.");
+      if (err?.name === "TypeError" || err?.message?.includes("fetch")) {
+        setError("Network error: Could not connect to the server. (Check CORS or your internet connection)");
+      } else {
+        setError(err?.name === "ApiError" ? err.message : "Invalid email/employee ID or password. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
