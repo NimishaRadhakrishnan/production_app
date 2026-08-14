@@ -507,14 +507,21 @@ export default function Dashboard() {
   const uploadFileGeneric = async (endpoint: string, file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-    const token = tokenStorage.getAccessToken();
-    const headers: Record<string, string> = {};
-    if (token) headers.Authorization = `Bearer ${token}`;
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, { method: "POST", headers, body: formData });
-    if (!response.ok) throw new Error("Failed to upload file.");
-    const data = await response.json();
-    return data.url;
+    
+    try {
+      const response = await apiFetch<any>(endpoint, { 
+        method: "POST", 
+        body: formData as any
+      });
+      return response.url;
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      throw new Error(`Upload failed: ${err.message || err}`);
+    }
   };
+
+
+
 
   const handleSubmitLeaveRequest = async (e: React.FormEvent) => {
     e.preventDefault();

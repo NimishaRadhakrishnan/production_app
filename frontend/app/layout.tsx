@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { AuthProvider } from "@/lib/auth-context";
@@ -7,6 +7,12 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Vishakan Biotech - Field Force Management Platform",
   description: "Enterprise portal for GPS tracking, attendance monitoring, weekly plans, visits, and crop issues.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

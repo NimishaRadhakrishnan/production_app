@@ -64,7 +64,12 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
       const accessToken = tokenStorage.getAccessToken();
       if (accessToken) base.Authorization = `Bearer ${accessToken}`;
     }
-    return { ...base, ...(headers as Record<string, string>) };
+    const finalHeaders: Record<string, string> = { ...base, ...(headers as Record<string, string>) };
+    // If the body is FormData, we must delete Content-Type so the browser sets it automatically with the correct boundary
+    if (rest.body instanceof FormData) {
+      delete finalHeaders["Content-Type"];
+    }
+    return finalHeaders;
   };
 
   const method = rest.method || "GET";
